@@ -3,7 +3,7 @@ By Thomas Verhappen
 
 This system is designed to help devs create functional prototypes with as little resistance along the way as possible. This system isn't finished nor is it set in stone, if you have a question or encounter a problem feel free to contact me or post an issue on the github page.
 
-Try [the custom gpt](https://chatgpt.com/g/g-67dd214c26948191bbfbc2d693ad9096-quickdevtemplategpt) too! 
+Try [the custom gpt](https://chatgpt.com/g/g-67dd214c26948191bbfbc2d693ad9096-quickdevtemplategpt) too!
 
 ## Contents
 - [Rapid Prototyping System](#rapid-prototyping-system)
