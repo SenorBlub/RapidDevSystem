@@ -1,0 +1,7 @@
+{
+    "svelte.enable-ts-plugin": true,
+    "svelte.plugin.svelte.format.config.singleQuote": true,
+    "svelte.plugin.svelte.format.config.svelteStrictMode": true,
+    "tailwindCSS.emmetCompletions": true,
+    "svelte.trace.server": "messages"
+}
