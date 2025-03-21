@@ -30,29 +30,41 @@ async function runSQL(sql: string): Promise<void> {
 
 // ---------------- Data Operations ----------------
 
-// Create a record
-export const createRecord = async <T extends DynamicObject>(table: string, data: T): Promise<T> => {
+// Create a record; returned record includes an "id" field.
+export const createRecord = async <T extends DynamicObject>(
+  table: string,
+  data: T
+): Promise<T & { id: number }> => {
   const { data: result, error } = await supabase.from(table).insert([data]).select().single();
   if (error) throw new Error(`Create record error: ${error.message}`);
   return result;
 };
 
-// Create many records
-export const createRecords = async <T extends DynamicObject>(table: string, records: T[]): Promise<T[]> => {
+// Create many records; each record now includes an "id" field.
+export const createRecords = async <T extends DynamicObject>(
+  table: string,
+  records: T[]
+): Promise<Array<T & { id: number }>> => {
   const { data, error } = await supabase.from(table).insert(records).select();
   if (error) throw new Error(`Create records error: ${error.message}`);
   return data;
 };
 
-// Get a record by id
-export const getRecord = async <T extends DynamicObject>(table: string, id: number): Promise<T> => {
+// Get a record by id; returned record includes an "id" field.
+export const getRecord = async <T extends DynamicObject>(
+  table: string,
+  id: number
+): Promise<T & { id: number }> => {
   const { data, error } = await supabase.from(table).select("*").eq("id", id).single();
   if (error) throw new Error(`Get record error: ${error.message}`);
   return data;
 };
 
 // Get all records (with optional filters)
-export const getAllRecords = async <T extends DynamicObject>(table: string, filters?: Partial<T>): Promise<T[]> => {
+export const getAllRecords = async <T extends DynamicObject>(
+  table: string,
+  filters?: Partial<T>
+): Promise<Array<T & { id: number }>> => {
   let query = supabase.from(table).select("*");
   if (filters) {
     Object.entries(filters).forEach(([key, value]) => {
@@ -65,25 +77,33 @@ export const getAllRecords = async <T extends DynamicObject>(table: string, filt
 };
 
 // Get many records by IDs
-export const getRecordsByIds = async <T extends DynamicObject>(table: string, ids: number[]): Promise<T[]> => {
+export const getRecordsByIds = async <T extends DynamicObject>(
+  table: string,
+  ids: number[]
+): Promise<Array<T & { id: number }>> => {
   const { data, error } = await supabase.from(table).select("*").in("id", ids);
   if (error) throw new Error(`Get records by IDs error: ${error.message}`);
   return data;
 };
 
-// Update a record by id
-export const updateRecord = async <T extends DynamicObject>(table: string, id: number, data: Partial<T>): Promise<T> => {
+// Update a record by id; returned record includes an "id" field.
+export const updateRecord = async <T extends DynamicObject>(
+  table: string,
+  id: number,
+  data: Partial<T>
+): Promise<T & { id: number }> => {
   const { data: updated, error } = await supabase.from(table).update(data).eq("id", id).select().single();
   if (error) throw new Error(`Update record error: ${error.message}`);
   return updated;
 };
 
-// Update many records; each update contains an id and partial data
+// Update many records; each update contains an id and partial data.
+// Each returned record now includes an "id" field.
 export const updateRecords = async <T extends DynamicObject>(
   table: string,
   updates: { id: number; data: Partial<T> }[]
-): Promise<T[]> => {
-  const results: T[] = [];
+): Promise<Array<T & { id: number }>> => {
+  const results: Array<T & { id: number }> = [];
   for (const { id, data } of updates) {
     const updated = await updateRecord(table, id, data);
     results.push(updated);
@@ -107,7 +127,7 @@ export const deleteRecords = async (table: string, ids: number[]): Promise<boole
 
 // ---------------- Table Operations ----------------
 
-// Create a new table with a given structure
+// Create a new table with a given structure; always includes an "id" primary key.
 export const createTable = async (table: string, structure: DynamicObject): Promise<void> => {
   const columns = Object.entries(structure)
     .map(([col, sample]) => `"${col}" ${inferSQLType(sample)}`)
